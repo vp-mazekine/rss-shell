@@ -157,7 +157,7 @@ class RssShellTests {
     fun `config loader accepts custom file`() {
         val tempDir = createTempDirectory()
         val configFile = tempDir.resolve("custom.conf")
-        val dbPath = tempDir.resolve("db.sqlite").toString()
+        val dbPath = tempDir.resolve("db.sqlite").toAbsolutePath().toString().replace("\\", "/")
         val content = """
             {
               "rss-shell": {
