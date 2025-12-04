@@ -105,7 +105,13 @@ class Database(private val config: AppConfig) {
         val sql = "SELECT * FROM ${config.tables.feeds} WHERE external_id = ? AND is_active = ${if (isSqlite) 1 else true}"
         getConnection().use { conn ->
             conn.prepareStatement(sql).use { ps ->
-                ps.setString(1, externalId)
+                if (isSqlite) {
+                    // external_id is TEXT in SQLite schema
+                    ps.setString(1, externalId)
+                } else {
+                    // external_id is UUID in Postgres schema
+                    ps.setObject(1, java.util.UUID.fromString(externalId))
+                }
                 ps.executeQuery().use { rs ->
                     return if (rs.next()) rs.toFeed() else null
                 }
