@@ -36,7 +36,7 @@ class RssShellTests {
     @Test
     fun `database queries return active feed and exposed articles`() {
         val dir = createTempDirectory().toFile()
-        val config = buildConfig(dir.resolve("test.db").absolutePath)
+        val config = buildConfig(dir.resolve("test.db").absolutePath.toString().replace("\\", "/"))
         val database = Database(config)
         database.ensureSchema()
 
@@ -81,7 +81,7 @@ class RssShellTests {
     @Test
     fun `rss generation builds expected fields`() = testApplication {
         val dir = createTempDirectory().toFile()
-        val config = buildConfig(dir.resolve("rss.db").absolutePath)
+        val config = buildConfig(dir.resolve("rss.db").absolutePath.toString().replace("\\", "/"))
         val database = Database(config)
         database.ensureSchema()
 
@@ -120,7 +120,7 @@ class RssShellTests {
     @Test
     fun `articles endpoint redirects to original url`() = testApplication {
         val dir = createTempDirectory().toFile()
-        val config = buildConfig(dir.resolve("redirect.db").absolutePath)
+        val config = buildConfig(dir.resolve("redirect.db").absolutePath.toString().replace("\\", "/"))
         val database = Database(config)
         database.ensureSchema()
 
