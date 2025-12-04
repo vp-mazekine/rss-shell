@@ -1,19 +1,16 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.kotlin.dsl.withType
+
 plugins {
     kotlin("jvm") version "1.9.25"
     application
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
+version = "0.1.0"
+
 repositories {
     mavenCentral()
-}
-
-application {
-    mainClass.set("com.example.rssshell.MainKt")
-}
-
-kotlin {
-    jvmToolchain(21)
 }
 
 dependencies {
@@ -38,12 +35,31 @@ tasks.withType<Jar> {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-val shadowJar = tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-    archiveBaseName.set("rss-shell")
-    archiveClassifier.set("")
-    archiveVersion.set("")
+application {
+    mainClass.set("com.mazekine.rss.shell.MainKt")
 }
 
+val shadowJar = tasks.withType<ShadowJar> {
+    archiveBaseName.set("rss-shell")
+    archiveClassifier.set("all")
+    manifest {
+        attributes(
+            "Main-Class" to "com.mazekine.rss.shell.MainKt",
+            "Implementation-Title" to "rss-shell",
+            "Implementation-Version" to project.version
+        )
+    }
+}
+
+kotlin {
+    jvmToolchain(21)
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+/*
 tasks.named<org.gradle.api.tasks.bundling.Zip>("distZip") {
     dependsOn(shadowJar)
 }
@@ -54,4 +70,4 @@ tasks.named<org.gradle.api.tasks.bundling.Tar>("distTar") {
 
 tasks.named<org.gradle.jvm.application.tasks.CreateStartScripts>("startScripts") {
     dependsOn(shadowJar)
-}
+}*/
