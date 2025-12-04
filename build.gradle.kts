@@ -38,8 +38,20 @@ tasks.withType<Jar> {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+val shadowJar = tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
     archiveBaseName.set("rss-shell")
     archiveClassifier.set("")
     archiveVersion.set("")
+}
+
+tasks.named<org.gradle.api.tasks.bundling.Zip>("distZip") {
+    dependsOn(shadowJar)
+}
+
+tasks.named<org.gradle.api.tasks.bundling.Tar>("distTar") {
+    dependsOn(shadowJar)
+}
+
+tasks.named<org.gradle.jvm.application.tasks.CreateStartScripts>("startScripts") {
+    dependsOn(shadowJar)
 }
